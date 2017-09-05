@@ -26,6 +26,6 @@ Check out the docker compose project here:
 ## Documentation
 Installation and configuration instructions can be found here:
 
-[SerialBox Dox](https://serial-lab.gitlab.io/serialbox/installation/index.html)
+[SerialBox Dox](https://serial-lab.gitlab.io/serialbox-dox/installation/index.html)
 
 
