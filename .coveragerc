@@ -1,0 +1,9 @@
+[run]
+omit =
+    */__init__.py/*
+    */migrations/*
+    serialbox/common/admin.py
+    serialbox/tests/settings.py
+    serialbox/apps.py
+source = 
+    serialbox

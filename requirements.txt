@@ -1,0 +1,9 @@
+Django
+djangorestframework
+decorator==4.0.6
+djangorestframework-csv
+djangorestframework-xml
+Markdown==2.6.2
+psycopg2==2.6.1
+python-dotenv
+six

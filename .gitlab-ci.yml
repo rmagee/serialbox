@@ -1,0 +1,66 @@
+services:
+  - postgres
+  
+variables:
+  POSTGRES_DB: $SERIALBOX_DB
+  POSTGRES_USER: $SERIALBOX_USER
+  POSTGRES_PASSWORD: $SERIALBOX_PASSWORD
+
+stages:
+    - test-python
+    - build-docs
+    - deploy
+
+python3_5_unit_test:
+  image: seriallab/python3.5dev
+  stage: test-python
+  script:
+  - pip install -r requirements.txt
+  - pip install coverage
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
+  - coverage run manage.py test
+  - coverage report -m
+  - coverage html
+  artifacts:
+    paths:
+      - htmlcov/
+  
+python2_7_unit_test:
+  image: seriallab/python2.7dev
+  stage: test-python
+  script:
+  - pip install -r requirements.txt
+  - pip install coverage
+  - python manage.py migrate
+  - python manage.py collectstatic --noinput
+  - coverage run manage.py test
+  - coverage html
+  artifacts:
+    paths:
+      - htmlcov/
+
+deploy:
+    stage: deploy
+    image: docker:latest
+    services:
+    - docker:dind
+    script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker build -t registry.gitlab.com/serial-lab/serialbox:latest .
+    - docker push registry.gitlab.com/serial-lab/serialbox:latest
+    only:
+    - tags
+    environment: production
+    
+pages:
+    image: seriallab/python3.5dev
+    stage: build-docs
+    script:
+    - pip install mkdocs
+    - mkdocs build -d ./public
+    artifacts:
+        paths:
+        - public
+    only:
+    - tags

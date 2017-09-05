@@ -1,0 +1,14 @@
+version: '2'
+services:
+  postgres:
+    image: postgres
+    environment:
+       POSTGRES_DB: ${SERIALBOX_DB}
+       POSTGRES_USER: ${SERIALBOX_USER}
+       POSTGRES_PASSWORD: ${SERIALBOX_PASSWORD}
+  web:
+    image: registry.gitlab.com/serial-lab/serialbox
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres

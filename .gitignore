@@ -1,0 +1,16 @@
+*.log
+*.pot
+*.pyc
+*.db
+*.sublime-project
+.env
+.project
+.pytdevproject
+local_settings.py
+/static
+/htmlcov/
+/.settings/
+*.idea
+/.metadata/
+.idea/*
+/docs/site/
