@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
     vim \
+    openssh-client \
+    bash 
   && rm -rf /var/lib/apt/lists/*
 
   RUN pip install uwsgi
