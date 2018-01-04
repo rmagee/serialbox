@@ -26,8 +26,8 @@ python3_5_unit_test:
     paths:
       - htmlcov/
   
-python2_7_unit_test:
-  image: seriallab/python2.7dev
+python3_6_unit_test:
+  image: seriallab/python3.6dev
   stage: test-python
   script:
   - pip install -r requirements.txt
