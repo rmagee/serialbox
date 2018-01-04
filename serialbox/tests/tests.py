@@ -34,7 +34,7 @@ class PoolTests(APITestCase):
         user = User.objects.create_user(username='testuser',
                                    password='unittest',
                                    email='testuser@seriallab.local')
-        self.client.force_login(user)
+        self.client.force_authenticate(user=user)
         self.create_pool()
         self.create_region()
 
