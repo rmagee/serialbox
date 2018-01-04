@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 class PoolTests(APITestCase):
 
     def setUp(self):
-        user = User.objects.create(username='testuser',
+        user = User.objects.create_user(username='testuser',
                                    password='unittest',
                                    email='testuser@seriallab.local')
         self.client.force_login(user)
