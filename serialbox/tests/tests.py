@@ -17,7 +17,7 @@
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import logging
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
