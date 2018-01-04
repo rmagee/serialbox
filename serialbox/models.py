@@ -137,9 +137,14 @@ class Region(BaseModel):
             'The order in which this region will be '
             'consumed as numbers are issued from the pool '
             'overall'))
-    pool = models.ForeignKey(Pool, null=True, blank=True, verbose_name=_(
-        'Number Pool'), help_text=_('The Number Pool this region will '
-                                    'belong to.'))
+    pool = models.ForeignKey(
+        Pool,
+        null=True,
+        blank=True,
+        verbose_name=_('Number Pool'),
+        help_text=_('The Number Pool this region will '
+                    'belong to.'),
+        on_delete=models.SET_NULL)
 
     def __str__(self):
         '''
@@ -158,6 +163,7 @@ class SequentialRegion(Region):
     end value as opposed to a list or random pool of numbers which have
     different properties to express their bounds.
     '''
+
     @staticmethod
     def pre_save(sender, instance, **kwargs):
         '''
@@ -167,7 +173,8 @@ class SequentialRegion(Region):
             instance.state = instance.start
 
     start = models.BigIntegerField(null=False, blank=False, verbose_name=_(
-        'Starting Number'), help_text=_('The starting number for this region.'))
+        'Starting Number'), help_text=_(
+        'The starting number for this region.'))
     end = models.BigIntegerField(null=False, blank=False, verbose_name=_(
         'Ending Number'), help_text=_('The ending number for this region.'))
     state = models.BigIntegerField(null=False, blank=False, verbose_name=_(
@@ -238,7 +245,7 @@ class ResponseTemplate(BaseModel):
     '''
     readable_name = models.CharField(max_length=100, null=False, blank=False,
                                      verbose_name=_('Name'), help_text=_(
-                                         'The name of the template.'))
+            'The name of the template.'))
     description = models.TextField(verbose_name=_('Description'), help_text=_(
         'A brief description of what this template does.'))
     template_text = models.TextField(
@@ -338,5 +345,6 @@ class Response(BaseModel):
 
     def __str__(self):
         return '{0}:{1}'.format(self.created_date)
+
 
 pre_save.connect(SequentialRegion.pre_save, SequentialRegion)
