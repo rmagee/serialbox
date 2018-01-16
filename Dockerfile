@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     vim \
     openssh-client \
-    bash 
+    bash \
   && rm -rf /var/lib/apt/lists/*
 
   RUN pip install uwsgi
