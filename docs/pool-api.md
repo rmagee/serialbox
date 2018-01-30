@@ -102,11 +102,11 @@ within the request URL.
 
 ### URL 
 
-    http[s]://[host]:[port]/[path]/pools-detail/[machine_name]/
+    http[s]://[host]:[port]/[path]/pool-detail/[machine_name]/
 
 For example, to retrieve detail on pool with machine name *mypool*:
 
-    https://mydomain.org:9982/serialbox/pools/mypool/
+    https://mydomain.org:9982/serialbox/pool-detail/mypool/
 
 
 ### HTTP Methods Supported
