@@ -52,6 +52,7 @@ class SequentialRegionSerializer(RegionSerializer):
     '''
     Specifies the model...excludes the id...
     '''
+
     class Meta(object):
         model = models.SequentialRegion
         exclude = ('id',)
@@ -108,6 +109,22 @@ class PoolSerializerMeta(serializers.SerializerMetaclass):
         return ret
 
 
+class PoolDetailSerializer(six.with_metaclass(PoolSerializerMeta,
+                                              serializers.ModelSerializer)):
+    '''
+    Returns a full, detailed sequential region
+    '''
+    app_field_mapping = 'pool_slug_fields'
+    sequential_region_set = SequentialRegionSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta(object):
+        model = models.Pool
+        exclude = ('id',)
+
+
 class PoolSerializer(six.with_metaclass(PoolSerializerMeta,
                                         serializers.ModelSerializer)):
     '''
@@ -137,7 +154,7 @@ class PoolHyperlinkedSerializer(six.with_metaclass(PoolSerializerMeta,
     sequentialregion_set = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
-        view_name='sequential-region',
+        view_name='sequential-region-detail',
         lookup_field='machine_name',
     )
 
