@@ -195,9 +195,9 @@ class SequentialRegion(Region):
             raise AttributeError(_('Region instances must have a remaining '
                                    'attribute that indicates how many numbers '
                                    'are left in the Region.'))
-        super(SequentialRegion, self).save(*args, **kwargs)
         from serialbox.utils import check_sequential_region_boundaries
         check_sequential_region_boundaries(self)
+        super(SequentialRegion, self).save(*args, **kwargs)
 
     def _establish_order(self):
         '''

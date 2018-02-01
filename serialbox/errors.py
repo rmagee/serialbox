@@ -29,6 +29,6 @@ class RegionBoundaryException(APIException):
         self.status_code = HTTP_400_BAD_REQUEST
         if detail is None:
             self.detail = _('The new region has been defined within the '
-                            'start and end values of another region within. '
+                            'start and end values of another region within '
                             'the same pool. '
                             'Check your region configurations.')
