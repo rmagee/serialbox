@@ -1,5 +1,5 @@
 '''
-    Copyright 2016 SerialLab, LLC
+    Copyright 2018 SerialLab, CORP
 
     This file is part of SerialBox.
 

@@ -21,4 +21,4 @@ simple number range operations, SerialBox should function fine out of the box!
 ## License
 SerialBox is distributed and licensed under the 
 [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.html)
-Copyright (c) 2015 SerialLab LLC, All rights reserved.
+Copyright (c) 2018 SerialLab CORP, All rights reserved.

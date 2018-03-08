@@ -1,7 +1,7 @@
 '''
     SerialBox Number Pool Application provides users with the ability to
     define and distribute serial numbers using a nice RESTful API.
-    Copyright (C) 2015 SerialLab, LLC
+    Copyright (C) 2018 SerialLab, CORP
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
