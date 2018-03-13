@@ -7,15 +7,6 @@ import sys
 
 from setuptools import setup
 
-
-def get_version(package):
-    """
-    Return package version as listed in `__version__` in `init.py`.
-    """
-    init_py = open(os.path.join(package, '__init__.py')).read()
-    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
-
-
 def get_packages(package):
     """
     Return root package and all sub-packages.
@@ -41,9 +32,6 @@ def get_package_data(package):
     return {package: filepaths}
 
 
-version = get_version('serialbox')
-
-
 if sys.argv[-1] == 'publish':
     if os.system("pip freeze | grep wheel"):
         print("wheel not installed.\nUse `pip install wheel`.\nExiting.")
@@ -64,7 +52,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='serialbox',
-    version=version,
+    version='1.0.5',
     url='http://www.serial-lab.com',
     license='GPL',
     description='Serial Number Distribution Made Easy.',
