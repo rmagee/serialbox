@@ -41,7 +41,7 @@ def check_sequential_region_boundaries(region):
     if regions.count() > 0:
         for current_region in regions:
             if region.start >= current_region.start and \
-               region.start <= current_region.end:
+                    region.start <= current_region.end:
                 raise RegionBoundaryException()
 
 

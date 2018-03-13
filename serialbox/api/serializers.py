@@ -38,18 +38,6 @@ class RegionSerializer(serializers.ModelSerializer):
     pool = serializers.SlugRelatedField(slug_field='machine_name',
                                         queryset=models.Pool.objects.all())
 
-    def validate_order(self, value):
-        '''
-        Establish order where there is none. :-)
-        '''
-        if isinstance(self.initial_data, QueryDict):
-            self.initial_data._mutable = True
-        regions = self.Meta.model.objects.filter(
-            pool__machine_name=self.initial_data.get('pool')).aggregate(
-            Max('order')
-        )
-        self.initial_data["order"] = regions.get('order__max', 1)
-
 
 class SequentialRegionSerializer(RegionSerializer):
     '''
