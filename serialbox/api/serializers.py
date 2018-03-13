@@ -20,6 +20,7 @@ import six
 import importlib
 
 from django.db.models import Max
+from django.http.request import QueryDict
 from django.apps import apps
 from django.utils.translation import gettext as _
 
@@ -41,6 +42,8 @@ class RegionSerializer(serializers.ModelSerializer):
         '''
         Establish order where there is none. :-)
         '''
+        if isinstance(self.initial_data, QueryDict):
+            self.initial_data._mutable = True
         regions = self.Meta.model.objects.filter(
             pool__machine_name=self.initial_data.get('pool')).aggregate(
             Max('order')

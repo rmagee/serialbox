@@ -206,7 +206,8 @@ class SequentialRegion(Region):
         regions = SequentialRegion.objects.filter(pool=self.pool).aggregate(
             models.Max('order')
         )
-        self.order = regions.get('order_max', 1)
+        val = regions['order__max'] or 0 + 1
+        self.order = val + 1
 
     def __str__(self):
         '''
