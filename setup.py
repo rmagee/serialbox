@@ -52,7 +52,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='serialbox',
-    version='1.0.5',
+    version='1.0.6',
     url='http://www.serial-lab.com',
     license='GPL',
     description='Serial Number Distribution Made Easy.',
