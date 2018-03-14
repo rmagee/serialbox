@@ -144,7 +144,7 @@ class Region(BaseModel):
         verbose_name=_('Number Pool'),
         help_text=_('The Number Pool this region will '
                     'belong to.'),
-        on_delete=models.SET_NULL)
+        on_delete=models.CASCADE)
 
     def __str__(self):
         '''
