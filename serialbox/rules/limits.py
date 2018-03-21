@@ -62,7 +62,7 @@ class RequestThresholdLimitRule(common.PreprocessingRule):
             raise errors.ThresholdLimitRuleError(
                 'The request threshold of %s has '
                 'been exceeded by the request size of %s' %
-                (pool.threshold, size))
+                (pool.request_threshold, size))
         return True
 
 
