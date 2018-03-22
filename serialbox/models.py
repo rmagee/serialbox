@@ -220,7 +220,7 @@ class SequentialRegion(Region):
         '''
         Returns the number of numbers remaining in the current SequentialRegion
         '''
-        return self.end - self.state
+        return self.end - (self.state - 1)
 
     def clean(self):
         try:
