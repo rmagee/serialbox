@@ -19,7 +19,7 @@ python3_5_unit_test:
   - pip install coverage
   - python manage.py migrate
   - python manage.py collectstatic --noinput
-  - coverage run manage.py test
+  - coverage run manage.py test random_flavorpack.tests.randomized_region_tests
   - coverage report -m
   - coverage html
   artifacts:
@@ -34,7 +34,7 @@ python3_6_unit_test:
   - pip install coverage
   - python manage.py migrate
   - python manage.py collectstatic --noinput
-  - coverage run manage.py test
+  - coverage run manage.py test random_flavorpack.tests.randomized_region_tests
   - coverage html
   artifacts:
     paths:
