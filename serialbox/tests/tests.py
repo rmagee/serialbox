@@ -153,7 +153,7 @@ class PoolTests(APITestCase):
         from serialbox.models import Pool
         pool = Pool.objects.get(machine_name='utpool1')
         size = discovery.get_total_pool_size(pool)
-        self.assertEqual(size, 99, 'The total pool size should be 99.')
+        self.assertEqual(size, 100, 'The total pool size should be 99.')
 
     def test_get_all_regions_by_pool(self):
         '''
