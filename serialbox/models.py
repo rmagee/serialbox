@@ -30,7 +30,7 @@ machine_name_regex = r'^[A-Za-z0-9]*$'
 machine_name_validator = RegexValidator(
     machine_name_regex,
     _('Only numbers and letters are allowed. '
-      'Invalid Machine Name.'))
+      'Invalid API Key.'))
 
 
 class BaseModel(models.Model):
@@ -70,9 +70,9 @@ class Pool(BaseModel):
         max_length=100,
         null=False,
         blank=False,
-        verbose_name=_('Machine Name'),
+        verbose_name=_('API Key'),
         help_text=_(
-            'A url/api-friendly machine name for use in API calls and '
+            'A url/api-friendly unique key for use in API calls and '
             'such.'),
         validators=[
             machine_name_validator,
@@ -114,9 +114,9 @@ class Region(BaseModel):
         max_length=100,
         null=False,
         blank=False,
-        verbose_name=_('Machine Name'),
+        verbose_name=_('API Key'),
         help_text=_(
-            'A url/api-friendly machine name for use in API calls and '
+            'A url/api-friendly unique key for use in API calls and '
             'such.'),
         validators=[
             machine_name_validator,
