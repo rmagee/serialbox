@@ -25,7 +25,7 @@ setup(
     url='http://www.serial-lab.com',
     license='GPL',
     description='Serial Number Distribution Made Easy.',
-    author='Rob Magee',
+    author='SerialLab Corp',
     author_email='slab@serial-lab.com',
     packages=find_packages(),
     package_data=get_package_data('serialbox'),
