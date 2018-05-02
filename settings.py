@@ -22,7 +22,7 @@ load_dotenv(dotenv_path)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: this is only here as an example settings file!
 SECRET_KEY = 'l$+#s2al#vz27ai)q4of)#$oni9&lk&)=0%tnh_5donkkzddnm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
