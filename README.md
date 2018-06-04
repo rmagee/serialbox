@@ -1,4 +1,5 @@
 [![coverage report](https://gitlab.com/serial-lab/serialbox/badges/master/coverage.svg?job=python3_5_unit_test)](https://gitlab.com/serial-lab/serialbox/commits/master) [![build status](https://gitlab.com/serial-lab/serialbox/badges/master/build.svg)](https://gitlab.com/serial-lab/serialbox/commits/master)
+[![PyPI version](https://badge.fury.io/py/serialbox.svg)](https://badge.fury.io/py/serialbox)
 
 ```
   ____            _       _ ____            
