@@ -21,7 +21,7 @@ def get_package_data(package):
 
 setup(
     name='serialbox',
-    version='1.0.9',
+    version='1.0.10',
     url='http://www.serial-lab.com',
     license='GPL',
     description='Serial Number Distribution Made Easy.',
