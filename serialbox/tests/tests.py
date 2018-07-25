@@ -336,3 +336,20 @@ class PoolTests(APITestCase):
         response = self.client.get(url, format='json')
         logger.debug(response.content)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_group_access(self):
+        """
+        Simulate adding a user to the allocate group and having that user
+        gain access.
+        """
+        user = User.objects.create_user(
+            'baduser', 'bad@worse.local', 'reallybadperson'
+        )
+        group = Group.objects.get(name='Allocate Numbers Access')
+        user.groups.add(group)
+        user.save()
+        url = reverse('allocate-numbers', args=['utpool1', '10'])
+        self.client.force_authenticate(user=user)
+        response = self.client.get(url, format='json')
+        logger.debug(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

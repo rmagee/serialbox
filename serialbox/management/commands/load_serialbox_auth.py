@@ -40,14 +40,21 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         ct = ContentType.objects.get_for_model(models.Pool)
-        pool_allocate = Permission.objects.get_or_create(
+        pool_allocate, created = Permission.objects.get_or_create(
             codename='allocate_numbers',
-            name='Can allocate numbers',
             content_type=ct
-        )[0]
+        )
+        if created:
+            pool_allocate.name='Can allocate numbers'
+            pool_allocate.save()
+
         group = Group.objects.get_or_create(
             name='Pool API Access'
         )[0]
+        allocate_group = Group.objects.get_or_create(
+            name='Allocate Numbers Access'
+        )[0]
+        self._add_permission(allocate_group, pool_allocate)
         self._add_permission(group,
            pool_allocate
         )
