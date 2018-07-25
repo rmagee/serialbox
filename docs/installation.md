@@ -135,6 +135,15 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+## Create The Default Permissions and Groups
+You will need to create the default permissions that the API checks
+during inbound `allocate` requests.  In addition, this command will
+create some default convenience groups that allow you to quickly give
+users access to the Pool, Region and Allocate APIs.
+
+    python manage.py load_serialbox_auth
+
+
 ## (Optional) Execute the Unit Tests
 
 ### Using Your Settings File
