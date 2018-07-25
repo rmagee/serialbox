@@ -18,10 +18,11 @@
 '''
 import logging
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from serialbox.management.commands.load_serialbox_auth import Command
 from serialbox.utils import get_region_by_machine_name
 from serialbox import discovery
 
@@ -34,9 +35,16 @@ class PoolTests(APITestCase):
         user = User.objects.create_user(username='testuser',
                                    password='unittest',
                                    email='testuser@seriallab.local')
+        Command().handle()
+        for permission in Permission.objects.all():
+            print(permission.name, permission.codename)
+        group = Group.objects.get(name='Pool API Access')
+        user.groups.add(group)
+        user.save()
         self.client.force_authenticate(user=user)
         self.create_pool()
         self.create_region()
+        self.user = user
 
     def tearDown(self):
         '''
@@ -315,3 +323,16 @@ class PoolTests(APITestCase):
             "request_threshold": 100
         }
         self.create_pool(data, status.HTTP_400_BAD_REQUEST)
+
+    def test_no_access(self):
+        """
+        Simulate a user asking to do something he has not rights to.
+        """
+        user = User.objects.create_user(
+            'baduser', 'bad@worse.local', 'reallybadperson'
+        )
+        url = reverse('allocate-numbers', args=['utpool1', '10'])
+        self.client.force_authenticate(user=user)
+        response = self.client.get(url, format='json')
+        logger.debug(response.content)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -18,7 +18,6 @@ python3_5_unit_test:
   - pip install -r requirements.txt
   - pip install coverage
   - python manage.py migrate
-  - python manage.py collectstatic --noinput
   - coverage run manage.py test
   - coverage report -m
   - coverage html
@@ -33,7 +32,6 @@ python3_6_unit_test:
   - pip install -r requirements.txt
   - pip install coverage
   - python manage.py migrate
-  - python manage.py collectstatic --noinput
   - coverage run manage.py test
   - coverage html
   artifacts:

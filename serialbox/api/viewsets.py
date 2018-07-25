@@ -82,13 +82,14 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
 pool_list = PoolViewSet.as_view({'get': 'list', })
 pool_create = PoolViewSet.as_view({'post': 'create'})
 pool_detail = PoolViewSet.as_view({'get': 'retrieve', })
-pool_modify = PoolViewSet.as_view({'put': 'partial_update', 'delete': 'destroy', },
-                                  lookup_field='machine_name')
+pool_modify = PoolViewSet.as_view(
+    {'put': 'partial_update', 'delete': 'destroy', },
+    lookup_field='machine_name')
 pool_form = PoolViewSet.as_view({'get': 'form'},
                                 renderer_classes=[renderers.HTMLFormRenderer])
 
 
-class SequentialRegionViewSet(viewsets.ModelViewSet, FormMixin):
+class SequentialRegionViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
     '''
 
     # Sequential Region API
@@ -127,6 +128,7 @@ class SequentialRegionViewSet(viewsets.ModelViewSet, FormMixin):
         except ValidationError as v:
             raise RegionBoundaryException(v.detail)
 
+
 sequential_region_list = SequentialRegionViewSet.as_view({
     'get': 'list'
 })
@@ -143,22 +145,6 @@ sequential_region_modify = SequentialRegionViewSet.as_view({
 sequential_region_form = SequentialRegionViewSet.as_view({
     'get': 'form'
 })
-# sequential_region_detail_update_delete = SequentialRegionViewSet.as_view({
-#     'get': 'retrieve',
-#     'put': 'partial_update',
-#     'delete': 'destroy'
-# })
-#
-#
-# # pool_list = PoolViewSet.as_view({'get': 'list', })
-# # pool_create = PoolViewSet.as_view({'post': 'create'})
-# # pool_detail = PoolViewSet.as_view({'get': 'retrieve', })
-# # pool_modify = PoolViewSet.as_view({'put': 'partial_update', 'delete': 'destroy', },
-# #                                   lookup_field='machine_name')
-# # pool_form = PoolViewSet.as_view({'get': 'form'},
-# #                                 renderer_classes=[renderers.HTMLFormRenderer])
-
-
 sequential_region_form = SequentialRegionViewSet.as_view({
     'get': 'form'
 }, renderer_classes=[renderers.HTMLFormRenderer])

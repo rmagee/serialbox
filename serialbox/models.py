@@ -96,6 +96,13 @@ class Pool(BaseModel):
     def __str__(self):
         return self.readable_name
 
+    class Meta:
+        verbose_name=_('Pool')
+        verbose_name_plural=_('Pools')
+        permissions = (
+            ('allocate_numbers', 'Can allocate numbers.'),
+            ('view_pools', 'Can view pools.'),
+        )
 
 class Region(BaseModel):
     '''

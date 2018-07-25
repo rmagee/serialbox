@@ -18,11 +18,11 @@
 '''
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 
 
 class SerialBoxModelViewSet(ModelViewSet):
     '''
     Base class for all ModelViewSets
     '''
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DjangoModelPermissions)

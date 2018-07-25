@@ -20,14 +20,12 @@ import logging
 
 from django.utils.translation import ugettext_lazy as _
 
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework import generics, views
-from rest_framework.settings import api_settings
 
-from serialbox import models
-from serialbox.serialbox_settings import SB_POOL_API_LIST_LIMIT
 from serialbox.api import serializers as sb_serializers
 from serialbox.discovery import get_generator
 from serialbox.flavor_packs import FlavorSaver
@@ -35,10 +33,17 @@ from serialbox.flavor_packs import FlavorSaver
 logger = logging.getLogger(__name__)
 
 
-class APIRootMeta(type):
-    '''
-    Allows other
-    '''
+class AllocationPermission(BasePermission):
+    """
+    Checks to see if users have the right to allocate numbers.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Super users and allocate_numbers permission holders are allowed.
+        """
+        return request.user.has_perm('serialbox.allocate_numbers') or \
+               request.user.is_superuser
 
 
 class APIRoot(views.APIView):
@@ -184,6 +189,7 @@ class AllocateView(views.APIView):
     * __region__: The *machine name* of the region that handled the response
     via the Pool specified in the request.
     '''
+    permission_classes = (IsAuthenticated, AllocationPermission)
     serializer_class = sb_serializers.ResponseSerializer
 
     def get(self, request, pool=None, size=None, region=None):

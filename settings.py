@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'serialbox',
     'rest_framework',
-)
+]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
