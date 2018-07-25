@@ -13,6 +13,7 @@ pages:
       - Pre and Post Processing Rules: rules.md
       - Custom FlavorPacks: flavorpacks.md
       - Custom Rules: custom-rules.md
+      - Release Notes: history.md
   
 theme: readthedocs
 use_directory_urls: false
