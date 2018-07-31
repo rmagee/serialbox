@@ -29,6 +29,7 @@ from rest_framework import generics, views
 from serialbox.api import serializers as sb_serializers
 from serialbox.discovery import get_generator
 from serialbox.flavor_packs import FlavorSaver
+from rest_framework.permissions import IsAuthenticated
 
 logger = logging.getLogger(__name__)
 
@@ -62,8 +63,8 @@ class APIRoot(views.APIView):
     * [The Django Rest Framework](http://http://www.django-rest-framework.org/)
 
     '''
-    from rest_framework.permissions import IsAuthenticated
-    # TODO: dynamically add flavor pack APIs where appropriate
+    permission_classes = (IsAuthenticated,)
+
     response_list = [
         'pool-list',
         'pool-create',
