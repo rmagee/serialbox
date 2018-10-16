@@ -18,9 +18,6 @@
 '''
 import six
 import importlib
-
-from django.db.models import Max
-from django.http.request import QueryDict
 from django.apps import apps
 from django.utils.translation import gettext as _
 
@@ -148,6 +145,15 @@ class PoolHyperlinkedSerializer(six.with_metaclass(PoolSerializerMeta,
         view_name='sequential-region-detail',
         lookup_field='machine_name',
     )
+
+class ResponseRuleSerializer(serializers.ModelSerializer):
+    '''
+    Default serializer for the ResponseRule model.
+    '''
+    class Meta:
+        model = models.ResponseRule
+        fields = '__all__'
+        
 
 
 class ResponseSerializer(serializers.ModelSerializer):

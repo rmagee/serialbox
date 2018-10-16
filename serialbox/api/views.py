@@ -206,6 +206,13 @@ class AllocateView(views.APIView):
             # pass the request off to the generator
             response = generator.get_response(request, size,
                                               pool, region)
-            serializer = sb_serializers.ResponseSerializer(response)
+            if generator.pool.responserule_set.count() == 0:
+                serializer = sb_serializers.ResponseSerializer(response)
+            else:
+                # get the response rule that matches the content
+                # load the task using the generator
+                # run the task in the rule using the configured rule reference
+                pass
+
             ret = serializer.data
         return Response(ret)

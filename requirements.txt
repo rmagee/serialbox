@@ -8,3 +8,6 @@ psycopg2==2.6.1
 python-dotenv
 six
 django-guardian
+django-model-utils
+quartet_templates
+quartet_capture
