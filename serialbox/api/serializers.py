@@ -110,7 +110,7 @@ class PoolDetailSerializer(six.with_metaclass(PoolSerializerMeta,
 
     class Meta(object):
         model = models.Pool
-        exclude = ('id',)
+        fields = '__all__'
 
 
 class PoolSerializer(six.with_metaclass(PoolSerializerMeta,
@@ -129,7 +129,7 @@ class PoolSerializer(six.with_metaclass(PoolSerializerMeta,
 
     class Meta(object):
         model = models.Pool
-        exclude = ('id',)
+        fields = '__all__'
 
 
 class PoolHyperlinkedSerializer(six.with_metaclass(PoolSerializerMeta,
