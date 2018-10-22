@@ -139,6 +139,9 @@ class ResponseRule(BaseModel):
         help_text=_('The rule to execute during response generation.')
     )
 
+    class Meta:
+        unique_together = ('content_type', 'pool')
+
 
 class Region(BaseModel):
     '''

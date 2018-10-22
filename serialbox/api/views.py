@@ -20,16 +20,21 @@ import logging
 
 from django.utils.translation import ugettext_lazy as _
 
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.throttling import UserRateThrottle
 from rest_framework import generics, views
 
 from serialbox.api import serializers as sb_serializers
 from serialbox.discovery import get_generator
 from serialbox.flavor_packs import FlavorSaver
+from serialbox.rules.steps import execute_rule_inline
+from serialbox.models import ResponseRule
 from rest_framework.permissions import IsAuthenticated
+
+from quartet_capture.models import Task as DBTask
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +75,7 @@ class APIRoot(views.APIView):
         'pool-create',
         'sequential-region-list',
         'sequential-region-create',
+        'response-rules',
         'allocate']
 
     def __init__(self, **kwargs):
@@ -193,7 +199,7 @@ class AllocateView(views.APIView):
     permission_classes = (IsAuthenticated, AllocationPermission)
     serializer_class = sb_serializers.ResponseSerializer
 
-    def get(self, request, pool=None, size=None, region=None):
+    def get(self, request: Request, pool=None, size=None, region=None):
         ret = []
         # TODO: doing this so I can display the documentation page without
         # generating an error.  Probably want a better approach
@@ -210,6 +216,26 @@ class AllocateView(views.APIView):
                 serializer = sb_serializers.ResponseSerializer(response)
             else:
                 # get the response rule that matches the content
+                content_type = request.accepted_renderer.format
+                try:
+                    logger.debug('looking for a responserule with format %s '
+                                 'for pool %s.', format,
+                                 generator.pool.readable_name)
+                    response_rule = ResponseRule.objects.get(
+                        content_type=content_type,
+                        pool=generator.pool
+                    )
+                    db_task = DBTask.objects.create(
+                        rule=response_rule.rule,
+                        status='WAITING'
+                    )
+                    number_list = response.get_number_list()
+                    execute_rule_inline(number_list, db_task)
+                except ResponseRule.DoesNotExist:
+                    logger.debug('Could not find a response rule for this '
+                                 'format. Falling back to default return '
+                                 'value')
+
                 # load the task using the generator
                 # run the task in the rule using the configured rule reference
                 pass

@@ -353,3 +353,5 @@ class PoolTests(APITestCase):
         response = self.client.get(url, format='json')
         logger.debug(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # def test_rule(self):
