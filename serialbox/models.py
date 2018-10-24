@@ -85,6 +85,7 @@ class Pool(BaseModel):
             'Whether or not this pool is active/in-use. '
             'If marked false the pool will no longer be '
             'able to be used in API calls, etc.'))
+
     request_threshold = models.BigIntegerField(
         default=50000,
         verbose_name=_('Threshold'),
@@ -97,11 +98,50 @@ class Pool(BaseModel):
         return self.readable_name
 
     class Meta:
-        verbose_name=_('Pool')
-        verbose_name_plural=_('Pools')
+        verbose_name = _('Pool')
+        verbose_name_plural = _('Pools')
         permissions = (
             ('allocate_numbers', 'Can allocate numbers.'),
         )
+
+
+CONTENT_TYPE_CHOICES = (
+    ('xml', 'xml'),
+    ('json', 'json'),
+    ('yaml', 'yaml'),
+    ('csv', 'csv')
+)
+
+
+class ResponseRule(BaseModel):
+    """
+    The response rule is used as part of post processing of number requests
+    if the ResponseRule post processing rule is enabled.
+    """
+    content_type = models.CharField(
+        max_length=100,
+        verbose_name=_("Content Type"),
+        help_text=_("The content type this response rule will handle."),
+        null=True,
+        choices=CONTENT_TYPE_CHOICES
+    )
+    pool = models.ForeignKey(
+        'serialbox.Pool',
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text=_('The Pool to associate this response configuration with.'),
+        verbose_name=_('Pool')
+    )
+    rule = models.ForeignKey(
+        'quartet_capture.Rule',
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text=_('The rule to execute during response generation.')
+    )
+
+    class Meta:
+        unique_together = ('content_type', 'pool')
+
 
 class Region(BaseModel):
     '''

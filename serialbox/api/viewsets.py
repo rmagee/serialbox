@@ -22,7 +22,7 @@ from rest_framework import renderers
 
 from serialbox import models, viewsets
 from serialbox.api import serializers
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, action
 from rest_framework.response import Response
 from django.core.exceptions import ValidationError
 from serialbox.errors import RegionBoundaryException
@@ -30,11 +30,27 @@ from serialbox.errors import RegionBoundaryException
 
 class FormMixin(object):
 
-    @detail_route(renderer_classes=[renderers.HTMLFormRenderer])
+    @action(renderer_classes=[renderers.HTMLFormRenderer], detail=True)
     def form(self, request, *args, **kwargs):
         obj = self.get_object()
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
+
+
+class NumberResponseViewset(viewsets.ModelViewSet):
+    """
+    The default viewset for the Number Response model.
+    """
+    queryset = models.Response.objects.all()
+
+
+class ResponseRuleViewSet(viewsets.ModelViewSet):
+    '''
+    CRUD ready model view for the ResponseRule model.
+    '''
+    queryset = models.ResponseRule.objects.all()
+    serializer_class = serializers.ResponseRuleSerializer
+    search_fields = ['=name', ]
 
 
 class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):

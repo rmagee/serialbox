@@ -22,7 +22,14 @@ from django.contrib.auth.models import User, Permission, Group
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from gs123.conversion import BarcodeConverter
+
+from quartet_capture.models import Rule
+
 from serialbox.management.commands.load_serialbox_auth import Command
+from serialbox.management.commands.create_response_rule import Command as \
+    RRCommand
+from serialbox.models import Pool, ResponseRule
 from serialbox.utils import get_region_by_machine_name
 from serialbox import discovery
 
@@ -33,8 +40,8 @@ class PoolTests(APITestCase):
 
     def setUp(self):
         user = User.objects.create_user(username='testuser',
-                                   password='unittest',
-                                   email='testuser@seriallab.local')
+                                        password='unittest',
+                                        email='testuser@seriallab.local')
         Command().handle()
         for permission in Permission.objects.all():
             print(permission.name, permission.codename)
@@ -144,7 +151,7 @@ class PoolTests(APITestCase):
         '''
         regions = discovery.get_all_regions()
         self.assertGreater(len(regions), 0, 'The region count is not greater '
-                           'than zero.')
+                                            'than zero.')
 
     def test_get_active_regions_by_pool(self):
         '''
@@ -155,7 +162,7 @@ class PoolTests(APITestCase):
         regions = discovery.get_all_regions_by_pool(pool)
         logger.debug("Returned %s regions", len(regions))
         self.assertGreater(len(regions), 0, 'The region count is not greater '
-                           'than zero.')
+                                            'than zero.')
 
     def test_get_pool_size(self):
         from serialbox.models import Pool
@@ -176,7 +183,7 @@ class PoolTests(APITestCase):
         regions = discovery.get_all_regions_by_pool(pool, False)
         logger.debug(regions)
         self.assertGreater(len(regions), 0, 'The region count is not greater '
-                           'than zero.')
+                                            'than zero.')
 
     def test_allocate_numbers(self):
         '''
@@ -270,7 +277,8 @@ class PoolTests(APITestCase):
         url = reverse('allocate-numbers', args=['fffff', '10'])
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code,
-                         status.HTTP_404_NOT_FOUND, 'The framework returned the '
+                         status.HTTP_404_NOT_FOUND,
+                         'The framework returned the '
                          'wrong error code for a bad pool name- should be 404.')
 
     def test_no_region_found(self):
@@ -286,7 +294,8 @@ class PoolTests(APITestCase):
         url = reverse('allocate-numbers', args=['utpool1', '10'])
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code,
-                         status.HTTP_404_NOT_FOUND, 'The framework returned the '
+                         status.HTTP_404_NOT_FOUND,
+                         'The framework returned the '
                          'wrong error code for a bad pool name- should be 404.')
 
     def test_modify_region(self):
@@ -309,7 +318,8 @@ class PoolTests(APITestCase):
         url = reverse('pool-modify', args=['utpool1'])
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code,
-                         status.HTTP_204_NO_CONTENT, 'The framework returned the '
+                         status.HTTP_204_NO_CONTENT,
+                         'The framework returned the '
                          'wrong error code for a bad pool name- should be 204.')
 
     def test_machine_name_validator(self):
@@ -353,3 +363,21 @@ class PoolTests(APITestCase):
         response = self.client.get(url, format='json')
         logger.debug(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_rule(self):
+        # create the rule and template
+        # make sure the rule gets hit- there should be a barcode error
+        # since the utpool1 will not generate a barcode value
+        RRCommand().execute(no_color=True)
+        # associate the pool with the template
+        pool = Pool.objects.get(machine_name='utpool1')
+        rule = Rule.objects.get(name='SB Response Rule')
+        ResponseRule.objects.create(
+            pool = pool,
+            content_type='xml',
+            rule=rule
+        )
+        url = reverse('allocate-numbers', args=['utpool1', '10'])
+        with self.assertRaises(BarcodeConverter.BarcodeNotValid):
+            response = self.client.get(url, {'format': 'xml'})
+            logger.debug(response.content)

@@ -22,6 +22,7 @@ from serialbox.api import views, viewsets
 import importlib
 from django.apps import apps as django_apps
 from serialbox.flavor_packs import FlavorPackApp
+from serialbox.api.routers import urlpatterns as viewpatterns
 
 urlpatterns = [
     url(r'^$', views.APIRoot.as_view(), name='api-index'),
@@ -60,6 +61,8 @@ urlpatterns = [
     url(r'^allocate/(?P<pool>[0-9a-zA-Z]{1,100})/(?P<size>[\d]{1,19})/$',
         views.AllocateView.as_view(), name='allocate-numbers'),
 ]
+
+urlpatterns += viewpatterns
 
 # This auto-magically imports and includes any flavorpack API urls into
 # the overall API by going through each app and looking for app.api.urls confs

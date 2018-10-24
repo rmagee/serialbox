@@ -40,20 +40,20 @@ class Generator(object):
         will be executed.  Will raise a Pool or Region DoesNotExist exception
         if the requested Pool/Region can not be found.
         '''
-        pool = self._get_pool(request, pool)
+        self.pool = self._get_pool(request, pool)
         if region:
-            region = self._get_region(pool, region)
+            region = self._get_region(self.pool, region)
         else:
-            region = get_region(pool)
+            region = get_region(self.pool)
         logger.debug('Using region %s', region)
         response = Response(region=str(region.machine_name),
                             pool=str(region.pool.machine_name),
                             size_granted=size, fulfilled=True,
                             remote_host=request.get_host())
-        self._execute_pre_processing_rules(request, size, pool, region)
+        self._execute_pre_processing_rules(request, size, self.pool, region)
         self.generate(request, response, region, size)
         self._execute_post_processing_rules(request, response,
-                                            size, pool, region)
+                                            size, self.pool, region)
         region.save()
         return response
 
