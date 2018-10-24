@@ -11,3 +11,4 @@ django-guardian
 django-model-utils
 quartet_templates
 quartet_capture
+gs123
