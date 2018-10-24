@@ -34,7 +34,7 @@ from serialbox.rules.steps import execute_rule_inline
 from serialbox.models import ResponseRule
 from rest_framework.permissions import IsAuthenticated
 
-from quartet_capture.models import Task as DBTask
+from quartet_capture.models import Task as DBTask, TaskParameter
 
 logger = logging.getLogger(__name__)
 
@@ -214,31 +214,35 @@ class AllocateView(views.APIView):
                                               pool, region)
             if generator.pool.responserule_set.count() == 0:
                 serializer = sb_serializers.ResponseSerializer(response)
+                ret = serializer.data
             else:
                 # get the response rule that matches the content
                 content_type = request.accepted_renderer.format
+                logger.debug('looking for a responserule with format %s '
+                             'for pool %s.', format,
+                             generator.pool.readable_name)
+                response_rule = ResponseRule.objects.get(
+                    content_type=content_type,
+                    pool=generator.pool
+                )
+                db_task = DBTask.objects.create(
+                    rule=response_rule.rule,
+                    status='QUEUED'
+                )
+                TaskParameter.objects.create(
+                    name='source',
+                    value='serialbox-allocate',
+                    task=db_task
+                )
                 try:
-                    logger.debug('looking for a responserule with format %s '
-                                 'for pool %s.', format,
-                                 generator.pool.readable_name)
-                    response_rule = ResponseRule.objects.get(
-                        content_type=content_type,
-                        pool=generator.pool
-                    )
-                    db_task = DBTask.objects.create(
-                        rule=response_rule.rule,
-                        status='WAITING'
-                    )
                     number_list = response.get_number_list()
-                    execute_rule_inline(number_list, db_task)
+                    rule = execute_rule_inline(number_list, db_task)
+                    ret = rule.data
                 except ResponseRule.DoesNotExist:
-                    logger.debug('Could not find a response rule for this '
+                    db_task.status = 'ERROR'
+                    db_task.save()
+                    logger.exception('Could not find a response rule for this '
                                  'format. Falling back to default return '
                                  'value')
-
-                # load the task using the generator
-                # run the task in the rule using the configured rule reference
-                pass
-
-            ret = serializer.data
+                    raise
         return Response(ret)
