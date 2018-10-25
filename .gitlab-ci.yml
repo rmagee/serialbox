@@ -38,18 +38,18 @@ python3_6_unit_test:
     paths:
       - htmlcov/
 
-deploy:
-    stage: deploy
-    image: docker:latest
-    services:
-    - docker:dind
-    script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
-    - docker build -t registry.gitlab.com/serial-lab/serialbox:latest .
-    - docker push registry.gitlab.com/serial-lab/serialbox:latest
-    only:
-    - tags
-    environment: production
+#deploy:
+#    stage: deploy
+#    image: docker:latest
+#    services:
+#    - docker:dind
+#    script:
+#    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+#    - docker build -t registry.gitlab.com/serial-lab/serialbox:latest .
+#    - docker push registry.gitlab.com/serial-lab/serialbox:latest
+#    only:
+#    - tags
+#    environment: production
 
 deploy_pypi:
   image: seriallab/python3.6dev
