@@ -225,26 +225,8 @@ class AllocateView(views.APIView):
                     content_type=content_type,
                     pool=generator.pool
                 )
-                db_task = DBTask.objects.create(
-                    rule=response_rule.rule,
-                    status='QUEUED'
-                )
-                TaskParameter.objects.create(
-                    name='source',
-                    value='serialbox-allocate',
-                    task=db_task
-                )
-                TaskParameter.objects.create(
-                    name='pool',
-                    value=pool.machine_name,
-                    task=db_task
-                )
-                TaskParameter.objects.create(
-                    name='size',
-                    value=str(size),
-                    task=db_task
-                )
-                TaskParameter.objects.
+                db_task = self._set_task_parameters(pool, region,
+                                                    response_rule, size)
                 try:
                     number_list = response.get_number_list()
                     rule = execute_rule_inline(number_list, db_task)
@@ -257,3 +239,31 @@ class AllocateView(views.APIView):
                                  'value')
                     raise
         return Response(ret)
+
+    def _set_task_parameters(self, pool, region, response_rule, size):
+        db_task = DBTask.objects.create(
+            rule=response_rule.rule,
+            status='QUEUED'
+        )
+        TaskParameter.objects.create(
+            name='source',
+            value='serialbox-allocate',
+            task=db_task
+        )
+        TaskParameter.objects.create(
+            name='pool',
+            value=pool,
+            task=db_task
+        )
+        TaskParameter.objects.create(
+            name='size',
+            value=str(size),
+            task=db_task
+        )
+        if region:
+            TaskParameter.objects.create(
+                name='region',
+                value=region,
+                task=db_task
+            )
+        return db_task
