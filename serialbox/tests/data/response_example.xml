@@ -18,7 +18,7 @@
         {% endfor %}
     </StepParameters>
     <RuleData>
-        {% for serial_number in serial_numbers %}
+        {% for serial_number in data %}
             <id>{{ serial_number }}</id>
         {% endfor %}
     </RuleData>

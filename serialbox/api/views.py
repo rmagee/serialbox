@@ -234,6 +234,17 @@ class AllocateView(views.APIView):
                     value='serialbox-allocate',
                     task=db_task
                 )
+                TaskParameter.objects.create(
+                    name='pool',
+                    value=pool.machine_name,
+                    task=db_task
+                )
+                TaskParameter.objects.create(
+                    name='size',
+                    value=str(size),
+                    task=db_task
+                )
+                TaskParameter.objects.
                 try:
                     number_list = response.get_number_list()
                     rule = execute_rule_inline(number_list, db_task)
