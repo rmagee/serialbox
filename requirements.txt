@@ -12,3 +12,4 @@ django-model-utils
 quartet_templates
 quartet_capture
 gs123
+jinja2
