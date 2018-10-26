@@ -25,11 +25,16 @@ def execute_rule_inline(message: bytes, db_task: DBTask):
     it using the appropriate parser.
     :param message_data: The data to be handled.
     '''
-    # create an executable task from a database rule
-    c_rule = Rule(db_task.rule, db_task)
-    # execute the rule
-    c_rule.execute(message)
-    # return the context
+    try:
+        # create an executable task from a database rule
+        c_rule = Rule(db_task.rule, db_task)
+        # execute the rule
+        c_rule.execute(message)
+        # return the context
+    except:
+        db_task.STATUS = "FAILED"
+        db_task.save()
+        raise
     return c_rule
 
 class ApplyTemplateStep(Step):
