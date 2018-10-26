@@ -231,6 +231,8 @@ class AllocateView(views.APIView):
                     number_list = response.get_number_list()
                     rule = execute_rule_inline(number_list, db_task)
                     ret = rule.data
+                    db_task.STATUS = "SUCCESS"
+                    db_task.save()
                 except ResponseRule.DoesNotExist:
                     db_task.status = 'ERROR'
                     db_task.save()
