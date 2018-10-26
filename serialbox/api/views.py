@@ -226,7 +226,8 @@ class AllocateView(views.APIView):
                     pool=generator.pool
                 )
                 db_task = self._set_task_parameters(pool, region,
-                                                    response_rule, size)
+                                                    response_rule, size,
+                                                    request)
                 try:
                     number_list = response.get_number_list()
                     rule = execute_rule_inline(number_list, db_task)
@@ -237,12 +238,12 @@ class AllocateView(views.APIView):
                     db_task.status = 'ERROR'
                     db_task.save()
                     logger.exception('Could not find a response rule for this '
-                                 'format. Falling back to default return '
-                                 'value')
+                                     'format. Falling back to default return '
+                                     'value')
                     raise
         return Response(ret)
 
-    def _set_task_parameters(self, pool, region, response_rule, size):
+    def _set_task_parameters(self, pool, region, response_rule, size, request):
         db_task = DBTask.objects.create(
             rule=response_rule.rule,
             status='QUEUED'
@@ -268,4 +269,13 @@ class AllocateView(views.APIView):
                 value=region,
                 task=db_task
             )
+        query_values = request.query_params.dict()
+        if len(query_values) > 0:
+            for k, v in query_values.items():
+                TaskParameter.objects.create(
+                    name=k,
+                    value=v,
+                    task=db_task
+                )
+
         return db_task
