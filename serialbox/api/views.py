@@ -212,19 +212,26 @@ class AllocateView(views.APIView):
             # pass the request off to the generator
             response = generator.get_response(request, size,
                                               pool, region)
-            if generator.pool.responserule_set.count() == 0:
-                serializer = sb_serializers.ResponseSerializer(response)
-                ret = serializer.data
-            else:
-                # get the response rule that matches the content
+            response_rule = None
+            try:
                 content_type = request.accepted_renderer.format
-                logger.debug('looking for a responserule with format %s '
-                             'for pool %s.', format,
-                             generator.pool.readable_name)
                 response_rule = ResponseRule.objects.get(
                     content_type=content_type,
                     pool=generator.pool
                 )
+            except ResponseRule.DoesNotExist:
+                logger.info("No response rules for content type %s and "
+                            "pool %s", request.accepted_renderer.format,
+                            generator.pool)
+
+            if not response_rule:
+                serializer = sb_serializers.ResponseSerializer(response)
+                ret = serializer.data
+            else:
+                # get the response rule that matches the content
+                logger.debug('looking for a responserule with format %s '
+                             'for pool %s.', format,
+                             generator.pool.readable_name)
                 db_task = self._set_task_parameters(pool, region,
                                                     response_rule, size,
                                                     request)
