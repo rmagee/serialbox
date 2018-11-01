@@ -31,14 +31,10 @@ def execute_rule_inline(message: bytes, db_task: DBTask):
         # execute the rule
         c_rule.execute(message)
         # return the context
+        db_task.STATUS = "FINISHED"
+        db_task.save()
     except:
         db_task.STATUS = "FAILED"
         db_task.save()
         raise
     return c_rule
-
-class ApplyTemplateStep(Step):
-    """
-    Will apply a quartet_templates template to any data received.
-    """
-    pass
