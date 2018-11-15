@@ -253,7 +253,7 @@ class AllocateView(views.APIView):
     def _set_task_parameters(self, pool, region, response_rule, size, request):
         db_task = DBTask.objects.create(
             rule=response_rule.rule,
-            status='QUEUED'
+            status='FINISHED'
         )
         TaskParameter.objects.create(
             name='source',
