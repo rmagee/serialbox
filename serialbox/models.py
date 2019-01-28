@@ -103,7 +103,10 @@ class Pool(BaseModel):
         permissions = (
             ('allocate_numbers', 'Can allocate numbers.'),
         )
-
+        ordering = [
+            'readable_name',
+            'machine_name'
+        ]
 
 CONTENT_TYPE_CHOICES = (
     ('xml', 'xml'),
