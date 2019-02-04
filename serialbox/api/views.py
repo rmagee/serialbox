@@ -75,7 +75,6 @@ class APIRoot(views.APIView):
         'pool-create',
         'sequential-region-list',
         'sequential-region-create',
-        'response-rules',
         'allocate']
 
     def __init__(self, **kwargs):
