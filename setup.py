@@ -24,7 +24,7 @@ readme = open('README.rst').read()
 
 setup(
     name='serialbox',
-    version='1.2.10',
+    version='1.3.0',
     url='http://www.serial-lab.com',
     license='GPL',
     long_description=readme,
