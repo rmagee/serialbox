@@ -19,6 +19,8 @@
 import logging
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, Group
+from django.core import management
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -368,7 +370,7 @@ class PoolTests(APITestCase):
         # create the rule and template
         # make sure the rule gets hit- there should be a barcode error
         # since the utpool1 will not generate a barcode value
-        RRCommand().execute(no_color=True)
+        management.call_command('create_response_rule')
         # associate the pool with the template
         pool = Pool.objects.get(machine_name='utpool1')
         rule = Rule.objects.get(name='SB Response Rule')
