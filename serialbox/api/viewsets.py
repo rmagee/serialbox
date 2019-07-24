@@ -16,15 +16,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
 '''
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
-
 from rest_framework import renderers
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from serialbox import models, viewsets
 from serialbox.api import serializers
-from rest_framework.decorators import detail_route, action
-from rest_framework.response import Response
-from django.core.exceptions import ValidationError
 from serialbox.errors import RegionBoundaryException
 
 
