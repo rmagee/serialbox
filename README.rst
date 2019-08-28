@@ -65,6 +65,6 @@ Documentation
 -------------
 Installation and configuration instructions can be found here:
 
-https://serial-lab.gitlab.io/serialbox/installation/index.html
+https://serial-lab.gitlab.io/serialbox/
 
 
