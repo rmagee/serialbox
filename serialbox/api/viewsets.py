@@ -74,6 +74,7 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
     '''
     queryset = models.Pool.objects.all()
     lookup_field = 'machine_name'
+    search_fields = ['readable_name', 'machine_name']
 
     def get_serializer_class(self):
         '''
@@ -92,6 +93,7 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
 
     def get_view_name(self):
         return _('Pool API')
+
 
 
 pool_list = PoolViewSet.as_view({'get': 'list', })
