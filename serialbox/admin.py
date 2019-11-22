@@ -4,12 +4,12 @@ from list_based_flavorpack.models import ListBasedRegion
 from random_flavorpack.models import RandomizedRegion
 
 
-class ResponseRule(admin.ModelAdmin):
+class ResponseRuleAdmin(admin.ModelAdmin):
     list_display = ('pool', 'rule', 'content_type')
     search_fields = ('pool',)
 
 
-class Response(admin.ModelAdmin):
+class ResponseAdmin(admin.ModelAdmin):
     list_display = ('pool', 'type',
                     'size_granted', 'remote_host')
     search_fields = ('remote_host', 'pool')
@@ -42,3 +42,5 @@ class PoolAdmin(admin.ModelAdmin):
 
 def register_to_site(admin_site):
     admin_site.register(models.Pool, PoolAdmin)
+    admin_site.register(models.ResponseRule, ResponseRuleAdmin)
+    admin_site.register(models.Response, ResponseAdmin)
