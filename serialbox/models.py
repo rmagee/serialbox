@@ -26,7 +26,8 @@ from serialbox import errors
 from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_save
 
-machine_name_regex = r'^[A-Za-z0-9]*$'
+# https://regex101.com/r/ZFOtT8/1
+machine_name_regex = r'^[A-Za-z0-9\-\_]*$'
 machine_name_validator = RegexValidator(
     machine_name_regex,
     _('Only numbers and letters are allowed. '
