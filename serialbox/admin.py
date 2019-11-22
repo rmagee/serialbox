@@ -21,6 +21,7 @@ class PoolAdmin(admin.ModelAdmin):
         'machine_name',
         'active'
     )
+    search_fields = ['readable_name', 'machine_name']
     inlines = [RegionInline, ListBasedInline, RandomRegionInline]
 
 def register_to_site(admin_site):
