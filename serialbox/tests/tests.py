@@ -34,6 +34,7 @@ from serialbox.management.commands.create_response_rule import Command as \
 from serialbox.models import Pool, ResponseRule
 from serialbox.utils import get_region_by_machine_name
 from serialbox import discovery
+from serialbox.management.commands import utils
 
 logger = logging.getLogger(__name__)
 
@@ -330,7 +331,7 @@ class PoolTests(APITestCase):
         '''
         data = {
             "readable_name": "created by validator unit test",
-            "machine_name": "utp_ool1",
+            "machine_name": "utp*ool1",
             "active": "true",
             "request_threshold": 100
         }
@@ -375,7 +376,7 @@ class PoolTests(APITestCase):
         pool = Pool.objects.get(machine_name='utpool1')
         rule = Rule.objects.get(name='SB Response Rule')
         ResponseRule.objects.create(
-            pool = pool,
+            pool=pool,
             content_type='xml',
             rule=rule
         )
@@ -383,3 +384,17 @@ class PoolTests(APITestCase):
         with self.assertRaises(BarcodeConverter.BarcodeNotValid):
             response = self.client.get(url, {'format': 'xml'})
             logger.debug(response.content)
+
+    def test_copy_pool(self):
+        management.call_command('create_response_rule')
+        pool = Pool.objects.get(machine_name='utpool1')
+        rule = Rule.objects.get(name='SB Response Rule')
+        ResponseRule.objects.create(
+            pool=pool,
+            content_type='xml',
+            rule=rule
+        )
+        utils.copy_pool(pool.machine_name)
+        copied = Pool.objects.get(
+            machine_name=utils._get_new_value(pool.machine_name))
+        rr = pool.responserule_set
