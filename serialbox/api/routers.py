@@ -19,7 +19,7 @@ router = DefaultRouter()
 router.register(
     r'response-rules',
     viewsets.ResponseRuleViewSet,
-    base_name='response-rules'
+    basename='response-rules'
 )
 
 urlpatterns = router.urls
