@@ -2,7 +2,7 @@ django
 djangorestframework
 decorator
 djangorestframework-csv
-djangorestframework-xml
+# djangorestframework-xml
 Markdown==2.6.2
 psycopg2
 python-dotenv
@@ -13,3 +13,4 @@ quartet_templates
 quartet_capture
 gs123
 jinja2
+-e git://github.com/rmagee/django-rest-framework-xml.git#egg=djangorestframework-xml
