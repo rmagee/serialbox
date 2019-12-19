@@ -2,7 +2,6 @@ from serialbox import models
 from django.contrib import admin
 from list_based_flavorpack.models import ListBasedRegion
 from random_flavorpack.models import RandomizedRegion
-from admin_actions import copy_pool
 
 class ResponseRuleAdmin(admin.ModelAdmin):
     list_display = ('pool', 'rule', 'content_type')
@@ -38,7 +37,6 @@ class PoolAdmin(admin.ModelAdmin):
     )
     search_fields = ['readable_name', 'machine_name']
     inlines = [RegionInline, ListBasedInline, RandomRegionInline]
-    actions = [copy_pool]
 
 def register_to_site(admin_site):
     admin_site.register(models.Pool, PoolAdmin)
