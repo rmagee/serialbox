@@ -5,7 +5,7 @@ from random_flavorpack.models import RandomizedRegion
 
 class ResponseRuleAdmin(admin.ModelAdmin):
     list_display = ('pool', 'rule', 'content_type')
-    search_fields = ('pool',)
+    search_fields = ('pool__readable_name','pool__machine_name')
 
 
 class ResponseAdmin(admin.ModelAdmin):
