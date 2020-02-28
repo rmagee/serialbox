@@ -58,7 +58,7 @@ urlpatterns = [
     url(r'^allocate/$',
         views.AllocateView.as_view(),
         name='allocate'),
-    url(r'^allocate/(?P<pool>[0-9a-zA-Z]{1,100})/(?P<size>[\d]{1,19})/$',
+    url(r'^allocate/(?P<pool>[\w\-\_]{1,100})/(?P<size>[\d]{1,19})/$',
         views.AllocateView.as_view(), name='allocate-numbers'),
 ]
 
