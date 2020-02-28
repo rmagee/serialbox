@@ -12,7 +12,7 @@
  '''
 
 __title__ = 'SerialBox'
-__version__ = '2.1.0'
+__version__ = '2.1.1'
 __author__ = 'Rob Magee'
 __license__ = 'GPL Affero Version 3'
 __copyright__ = 'Copyright 2018 SerialLab, CORP'
