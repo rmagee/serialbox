@@ -22,4 +22,16 @@ router.register(
     basename='response-rules'
 )
 
+router.register(
+    r'response-rules/pool/(?P<pool_id>\d{1,20})',
+    viewsets.ResponseRuleViewSet,
+    basename='filtered-response-rules'
+)
+
+router.register(
+    r'v2/pools',
+    viewsets.PoolViewSet,
+    basename='pools'
+)
+
 urlpatterns = router.urls

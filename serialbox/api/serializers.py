@@ -22,10 +22,9 @@ from django.apps import apps
 from django.utils.translation import gettext as _
 
 from rest_framework import serializers
-
 from serialbox import models
 from serialbox.api import errors
-
+from quartet_capture.serializers import RuleSerializer
 
 class RegionSerializer(serializers.ModelSerializer):
     '''
@@ -120,6 +119,7 @@ class PoolSerializer(six.with_metaclass(PoolSerializerMeta,
     excludes the primary key since it is meaningless for clients.
     '''
     app_field_mapping = 'pool_slug_fields'
+
     sequentialregion_set = serializers.SlugRelatedField(
         many=True,
         queryset=models.SequentialRegion.objects.all(),
@@ -131,6 +131,25 @@ class PoolSerializer(six.with_metaclass(PoolSerializerMeta,
         model = models.Pool
         fields = '__all__'
 
+
+class PoolModelSerializer(six.with_metaclass(PoolSerializerMeta,
+                                        serializers.ModelSerializer)):
+    '''
+    Adds URL relation to the serialized Region for pools and also
+    excludes the primary key since it is meaningless for clients.
+    '''
+    app_field_mapping = 'pool_model_fields'
+
+    sequentialregion_set = serializers.SlugRelatedField(
+        many=True,
+        queryset=models.SequentialRegion.objects.all(),
+        slug_field='machine_name',
+        required=False
+    )
+
+    class Meta(object):
+        model = models.Pool
+        fields = '__all__'
 
 class PoolHyperlinkedSerializer(six.with_metaclass(PoolSerializerMeta,
                                                    PoolSerializer)):
@@ -150,10 +169,11 @@ class ResponseRuleSerializer(serializers.ModelSerializer):
     '''
     Default serializer for the ResponseRule model.
     '''
+    pool = PoolSerializer(many=False, read_only=False)
+    rule = RuleSerializer(many=False, read_only=False)
     class Meta:
         model = models.ResponseRule
         fields = '__all__'
-        
 
 
 class ResponseSerializer(serializers.ModelSerializer):

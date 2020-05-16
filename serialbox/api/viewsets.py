@@ -49,7 +49,15 @@ class ResponseRuleViewSet(viewsets.ModelViewSet):
     '''
     queryset = models.ResponseRule.objects.all()
     serializer_class = serializers.ResponseRuleSerializer
-    search_fields = ['=name', ]
+    search_fields = ['=name', 'pool__readable_name', 'pool__machine_name',
+                     'rule__name']
+
+    def get_queryset(self):
+        pool_id = self.kwargs.get('pool_id')
+        if pool_id:
+            return models.ResponseRule.objects.filter(pool=pool_id)
+        else:
+            return super().get_queryset()
 
 
 class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
@@ -80,7 +88,7 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
         '''
         Return a different serializer depending on the client request.
         '''
-        ret = serializers.PoolSerializer
+        ret = serializers.PoolModelSerializer
         try:
             if self.request.query_params.get('related') == 'true':
                 ret = serializers.PoolHyperlinkedSerializer
@@ -93,7 +101,6 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
 
     def get_view_name(self):
         return _('Pool API')
-
 
 
 pool_list = PoolViewSet.as_view({'get': 'list', })
