@@ -16,15 +16,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
 '''
-import six
 import importlib
+
+import six
 from django.apps import apps
 from django.utils.translation import gettext as _
-
 from rest_framework import serializers
+
+from quartet_capture.models import Rule
 from serialbox import models
 from serialbox.api import errors
-from quartet_capture.serializers import RuleSerializer
+
 
 class RegionSerializer(serializers.ModelSerializer):
     '''
@@ -112,8 +114,7 @@ class PoolDetailSerializer(six.with_metaclass(PoolSerializerMeta,
         fields = '__all__'
 
 
-class PoolSerializer(six.with_metaclass(PoolSerializerMeta,
-                                        serializers.ModelSerializer)):
+class PoolSerializer(serializers.ModelSerializer):
     '''
     Adds URL relation to the serialized Region for pools and also
     excludes the primary key since it is meaningless for clients.
@@ -169,8 +170,8 @@ class ResponseRuleSerializer(serializers.ModelSerializer):
     '''
     Default serializer for the ResponseRule model.
     '''
-    pool = PoolSerializer(many=False, read_only=False)
-    rule = RuleSerializer(many=False, read_only=False)
+    pool = serializers.PrimaryKeyRelatedField(queryset=models.Pool.objects.all())
+    rule = serializers.PrimaryKeyRelatedField(queryset=Rule.objects.all())
     class Meta:
         model = models.ResponseRule
         fields = '__all__'
