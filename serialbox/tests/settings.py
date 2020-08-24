@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'quartet_templates.apps.QuartetTemplatesConfig',
     'quartet_capture.apps.QuartetCaptureConfig',
+    'quartet_output.apps.QuartetOutputConfig',
     'rest_framework',
     'serialbox',
 ]
