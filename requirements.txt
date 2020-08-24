@@ -11,6 +11,7 @@ django-guardian
 django-model-utils
 quartet_templates
 quartet_capture
+quartet_output
 gs123
 jinja2
 -e git://github.com/rmagee/django-rest-framework-xml.git#egg=djangorestframework-xml
