@@ -17,24 +17,19 @@
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import logging
-from django.urls import reverse
 from django.contrib.auth.models import User, Permission, Group
 from django.core import management
-
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from gs123.conversion import BarcodeConverter
-
 from quartet_capture.models import Rule
-
-from serialbox.management.commands.load_serialbox_auth import Command
-from serialbox.management.commands.create_response_rule import Command as \
-    RRCommand
-from serialbox.models import Pool, ResponseRule
-from serialbox.utils import get_region_by_machine_name
 from serialbox import discovery
 from serialbox.management.commands import utils
+from serialbox.management.commands.load_serialbox_auth import Command
+from serialbox.models import Pool, ResponseRule
+from serialbox.utils import get_region_by_machine_name
 
 logger = logging.getLogger(__name__)
 
