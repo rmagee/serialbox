@@ -25,8 +25,8 @@ from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.throttling import UserRateThrottle
-from rest_framework import generics, views
-
+from rest_framework import generics, views, exceptions, status
+from rest_framework.exceptions import NotFound
 from serialbox.api import serializers as sb_serializers
 from serialbox.discovery import get_generator
 from serialbox.flavor_packs import FlavorSaver
@@ -199,55 +199,64 @@ class AllocateView(views.APIView):
     serializer_class = sb_serializers.ResponseSerializer
 
     def get(self, request: Request, pool=None, size=None, region=None):
-        ret = []
-        # TODO: doing this so I can display the documentation page without
-        # generating an error.  Probably want a better approach
-        if pool and size:
-            logger.debug('Request received for pool %s and region %s.')
-            # convert the size parameter to an integer
-            size = int(size)
+        try:
+            ret = []
+            # TODO: doing this so I can display the documentation page without
+            # generating an error.  Probably want a better approach
+            if pool and size:
+                logger.debug('Request received for pool %s and region %s.')
+                # convert the size parameter to an integer
+                size = int(size)
 
-            generator = get_generator(pool)
-            # pass the request off to the generator
-            response = generator.get_response(request, size,
-                                              pool, region)
-            response_rule = None
-            try:
-                content_type = request.accepted_renderer.format
-                response_rule = ResponseRule.objects.get(
-                    content_type=content_type,
-                    pool=generator.pool
-                )
-            except ResponseRule.DoesNotExist:
-                logger.info("No response rules for content type %s and "
-                            "pool %s", request.accepted_renderer.format,
-                            generator.pool)
-
-            if not response_rule:
-                serializer = sb_serializers.ResponseSerializer(response)
-                ret = serializer.data
-            else:
-                # get the response rule that matches the content
-                logger.debug('looking for a responserule with format %s '
-                             'for pool %s.', format,
-                             generator.pool.readable_name)
-                db_task = self._set_task_parameters(pool, region,
-                                                    response_rule, size,
-                                                    request)
+                generator = get_generator(pool)
+                # pass the request off to the generator
+                response = generator.get_response(request, size,
+                                                  pool, region)
+                response_rule = None
                 try:
-                    number_list = response.get_number_list()
-                    rule = execute_rule_inline(number_list, db_task)
-                    ret = rule.data
-                    db_task.STATUS = "FINISHED"
-                    db_task.save()
+                    content_type = request.accepted_renderer.format
+                    response_rule = ResponseRule.objects.get(
+                        content_type=content_type,
+                        pool=generator.pool
+                    )
                 except ResponseRule.DoesNotExist:
-                    db_task.status = 'ERROR'
-                    db_task.save()
-                    logger.exception('Could not find a response rule for this '
-                                     'format. Falling back to default return '
-                                     'value')
-                    raise
-        return Response(ret)
+                    logger.info("No response rules for content type %s and "
+                                "pool %s", request.accepted_renderer.format,
+                                generator.pool)
+
+                if not response_rule:
+                    serializer = sb_serializers.ResponseSerializer(response)
+                    ret = serializer.data
+                else:
+                    # get the response rule that matches the content
+                    logger.debug('looking for a responserule with format %s '
+                                 'for pool %s.', format,
+                                 generator.pool.readable_name)
+                    db_task = self._set_task_parameters(pool, region,
+                                                        response_rule, size,
+                                                        request)
+                    try:
+                        number_list = response.get_number_list()
+                        rule = execute_rule_inline(number_list, db_task)
+                        ret = rule.data
+                        db_task.STATUS = "FINISHED"
+                        db_task.save()
+                    except ResponseRule.DoesNotExist:
+                        db_task.status = 'ERROR'
+                        db_task.save()
+                        logger.exception(
+                            'Could not find a response rule for this '
+                            'format. Falling back to default return '
+                            'value')
+                        raise
+            return Response(ret)
+        except NotFound:
+            raise
+        except Exception as e:
+            raise exceptions.APIException(
+                str(e),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def _set_task_parameters(self, pool, region, response_rule, size, request):
         db_task = DBTask.objects.create(
