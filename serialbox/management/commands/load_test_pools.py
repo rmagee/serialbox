@@ -39,13 +39,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         sp1 = models.Pool.objects.create(
             readable_name=_('Logositol 100mg Cartons'),
-            machine_name='00313000007772',
+            machine_name='00377700000136',
             active=True,
             request_threshold=1000
         )
         models.SequentialRegion.objects.create(
             readable_name=_('Logositol 100mg Cartons'),
-            machine_name='00313000007772',
+            machine_name='00377700000136',
             order=1,
             start=1,
             end=9999999999,
