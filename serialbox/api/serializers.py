@@ -139,7 +139,7 @@ class PoolModelSerializer(six.with_metaclass(PoolSerializerMeta,
     Adds URL relation to the serialized Region for pools and also
     excludes the primary key since it is meaningless for clients.
     '''
-    app_field_mapping = 'pool_model_fields'
+    app_field_mapping = 'pool_slug_fields'
 
     sequentialregion_set = serializers.SlugRelatedField(
         many=True,
