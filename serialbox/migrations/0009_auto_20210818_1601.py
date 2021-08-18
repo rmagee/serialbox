@@ -24,8 +24,5 @@ class Migration(migrations.Migration):
             name='task_name',
             field=models.CharField(default='', help_text='If a response rule was configured for the pool and the request was fulfilled, a task name will be supplied.', max_length=100, verbose_name='Task Name'),
             preserve_default=False,
-        ),
-        migrations.DeleteModel(
-            name='RandomizedRegion',
-        ),
+        )
     ]
