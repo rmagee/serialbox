@@ -227,6 +227,7 @@ class AllocateView(views.APIView):
                 if not response_rule:
                     serializer = sb_serializers.ResponseSerializer(response)
                     ret = serializer.data
+                    response.save()
                 else:
                     # get the response rule that matches the content
                     logger.debug('looking for a responserule with format %s '
@@ -241,6 +242,8 @@ class AllocateView(views.APIView):
                         ret = rule.data
                         db_task.STATUS = "FINISHED"
                         db_task.save()
+                        response.task_name = db_task.name
+                        response.save()
                     except ResponseRule.DoesNotExist:
                         db_task.status = 'ERROR'
                         db_task.save()

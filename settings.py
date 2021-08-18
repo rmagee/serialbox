@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'quartet_capture',
     'serialbox',
     'rest_framework',
+    'random_flavorpack'
 ]
 
 MIDDLEWARE_CLASSES = (

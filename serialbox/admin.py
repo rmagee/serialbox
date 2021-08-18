@@ -11,7 +11,7 @@ class ResponseRuleAdmin(admin.ModelAdmin):
 class ResponseAdmin(admin.ModelAdmin):
     list_display = ('pool', 'type',
                     'size_granted', 'remote_host')
-    search_fields = ('remote_host', 'pool')
+    search_fields = ('response',)
 
 
 class RegionInline(admin.StackedInline):

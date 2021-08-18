@@ -109,6 +109,7 @@ class Pool(BaseModel):
             'machine_name'
         ]
 
+
 CONTENT_TYPE_CHOICES = (
     ('xml', 'xml'),
     ('json', 'json'),
@@ -386,16 +387,35 @@ class Response(BaseModel):
         max_length=400,
         verbose_name=_('Remote Host'),
         help_text=_('The remote host which made the request.'))
+    task_name = models.CharField(
+        max_length=100,
+        verbose_name=_('Task Name'),
+        help_text=_('If a response rule was configured for the pool '
+                    'and the request was fulfilled, a task name '
+                    'will be supplied.'))
+    response = models.TextField(
+        verbose_name=_("Response"),
+        help_text=_("The response data"),
+        null=True,
+        blank=True,
+        db_index=True
+    )
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if hasattr(self, "number_list"):
+            self.response = self.number_list
+        super().save(force_insert, force_update, using, update_fields)
 
     def get_number_list(self):
         return self.number_list
 
     class Meta(object):
-        verbose_name = _('Response')
-        verbose_name_plural = _('Responses')
+        verbose_name = _('Request and Response')
+        verbose_name_plural = _('Requests and Responses')
 
     def __str__(self):
-        return '{0}:{1}'.format(self.created_date)
+        return '{0}'.format(self.created_date)
 
 
 pre_save.connect(SequentialRegion.pre_save, SequentialRegion)
