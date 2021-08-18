@@ -397,8 +397,7 @@ class Response(BaseModel):
         verbose_name=_("Response"),
         help_text=_("The response data"),
         null=True,
-        blank=True,
-        db_index=True
+        blank=True
     )
 
     def save(self, force_insert=False, force_update=False, using=None,
