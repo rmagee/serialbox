@@ -12,8 +12,8 @@ class ResponseRuleAdmin(admin.ModelAdmin):
 class ResponseAdmin(admin.ModelAdmin):
     def task(self):
         if self.task_name != '' and self.task_name is not None:
-            return mark_safe('<a class="download-task" href="%(url)s%(task_name)s/">%(task_name)s</a>' %
-                             {'url': '/capture/task-data/', 'task_name': self.task_name})
+            return mark_safe('<a style="color: black" class="download-task" href="%(url)s%(task_name)s">%(task_name)s</a>' %
+                             {'url': '/qu4rtetadmin/quartet_capture/task/?q=', 'task_name': self.task_name})
         else:
             return ''
 
