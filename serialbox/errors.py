@@ -1,4 +1,4 @@
-'''
+"""
     Copyright 2018 SerialLab, CORP
 
     This file is part of SerialBox.
@@ -15,20 +15,21 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
-'''
-from django.utils.translation import ugettext as _
+"""
+from django.utils.translation import gettext as _
 
 from rest_framework.exceptions import APIException
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
 
 class RegionBoundaryException(APIException):
-
     def __init__(self, detail=None):
         APIException.__init__(self, detail=detail)
         self.status_code = HTTP_400_BAD_REQUEST
         if detail is None:
-            self.detail = _('The new region has been defined within the '
-                            'start and end values of another region within '
-                            'the same pool. '
-                            'Check your region configurations.')
+            self.detail = _(
+                "The new region has been defined within the "
+                "start and end values of another region within "
+                "the same pool. "
+                "Check your region configurations."
+            )

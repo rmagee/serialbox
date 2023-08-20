@@ -1,4 +1,4 @@
-'''
+"""
     Copyright 2018 SerialLab, CORP
 
     This file is part of SerialBox.
@@ -15,9 +15,9 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from rest_framework import renderers
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -28,7 +28,6 @@ from serialbox.errors import RegionBoundaryException
 
 
 class FormMixin(object):
-
     @action(renderer_classes=[renderers.HTMLFormRenderer], detail=True)
     def form(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -40,20 +39,21 @@ class NumberResponseViewset(viewsets.ModelViewSet):
     """
     The default viewset for the Number Response model.
     """
+
     queryset = models.Response.objects.all()
 
 
 class ResponseRuleViewSet(viewsets.ModelViewSet):
-    '''
+    """
     CRUD ready model view for the ResponseRule model.
-    '''
+    """
+
     queryset = models.ResponseRule.objects.all()
     serializer_class = serializers.ResponseRuleSerializer
-    search_fields = ['=name', 'pool__readable_name', 'pool__machine_name',
-                     'rule__name']
+    search_fields = ["=name", "pool__readable_name", "pool__machine_name", "rule__name"]
 
     def get_queryset(self):
-        pool_id = self.kwargs.get('pool_id')
+        pool_id = self.kwargs.get("pool_id")
         if pool_id:
             return models.ResponseRule.objects.filter(pool=pool_id)
         else:
@@ -61,7 +61,7 @@ class ResponseRuleViewSet(viewsets.ModelViewSet):
 
 
 class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
-    '''
+    """
     ## Description
 
     Returns info on a specific pool if a machine_name is supplied
@@ -79,18 +79,19 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
     * `format` The format parameters depend on your *Django Rest Framework*
     configuration and can be found on the API page listed under the **GET**
     button at the left upper side of each page.
-    '''
+    """
+
     queryset = models.Pool.objects.all()
-    lookup_field = 'machine_name'
-    search_fields = ['readable_name', 'machine_name']
+    lookup_field = "machine_name"
+    search_fields = ["readable_name", "machine_name"]
 
     def get_serializer_class(self):
-        '''
+        """
         Return a different serializer depending on the client request.
-        '''
+        """
         ret = serializers.PoolModelSerializer
         try:
-            if self.request.query_params.get('related') == 'true':
+            if self.request.query_params.get("related") == "true":
                 ret = serializers.PoolHyperlinkedSerializer
         except AttributeError:
             pass
@@ -100,21 +101,34 @@ class PoolViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
         return viewsets.ModelViewSet.dispatch(self, request, *args, **kwargs)
 
     def get_view_name(self):
-        return _('Pool API')
+        return _("Pool API")
 
 
-pool_list = PoolViewSet.as_view({'get': 'list', })
-pool_create = PoolViewSet.as_view({'post': 'create'})
-pool_detail = PoolViewSet.as_view({'get': 'retrieve', })
+pool_list = PoolViewSet.as_view(
+    {
+        "get": "list",
+    }
+)
+pool_create = PoolViewSet.as_view({"post": "create"})
+pool_detail = PoolViewSet.as_view(
+    {
+        "get": "retrieve",
+    }
+)
 pool_modify = PoolViewSet.as_view(
-    {'put': 'partial_update', 'delete': 'destroy', },
-    lookup_field='machine_name')
-pool_form = PoolViewSet.as_view({'get': 'form'},
-                                renderer_classes=[renderers.HTMLFormRenderer])
+    {
+        "put": "partial_update",
+        "delete": "destroy",
+    },
+    lookup_field="machine_name",
+)
+pool_form = PoolViewSet.as_view(
+    {"get": "form"}, renderer_classes=[renderers.HTMLFormRenderer]
+)
 
 
 class SequentialRegionViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
-    '''
+    """
 
     # Sequential Region API
 
@@ -127,20 +141,21 @@ class SequentialRegionViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
     or *XML* format.
     * DELETE - Delete a region by using the `machine_name` of the region.
 
-    '''
+    """
+
     queryset = models.SequentialRegion.objects.all()
-    lookup_field = 'machine_name'
+    lookup_field = "machine_name"
 
     def list(self, request, *args, **kwargs):
         return viewsets.ModelViewSet.list(self, request, *args, **kwargs)
 
     def get_serializer_class(self):
-        '''
+        """
         Return a different serializer depending on the client request.
-        '''
+        """
         ret = serializers.SequentialRegionSerializer
         try:
-            if self.request.query_params.get('related') == 'true':
+            if self.request.query_params.get("related") == "true":
                 ret = serializers.SequentialRegionHyperlinkedSerializer
         except AttributeError:
             pass
@@ -153,22 +168,13 @@ class SequentialRegionViewSet(viewsets.SerialBoxModelViewSet, FormMixin):
             raise RegionBoundaryException(v.detail)
 
 
-sequential_region_list = SequentialRegionViewSet.as_view({
-    'get': 'list'
-})
-sequential_region_create = SequentialRegionViewSet.as_view({
-    'post': 'create'
-})
-sequential_region_detail = SequentialRegionViewSet.as_view({
-    'get': 'retrieve'
-})
-sequential_region_modify = SequentialRegionViewSet.as_view({
-    'put': 'partial_update',
-    'delete': 'destroy'
-})
-sequential_region_form = SequentialRegionViewSet.as_view({
-    'get': 'form'
-})
-sequential_region_form = SequentialRegionViewSet.as_view({
-    'get': 'form'
-}, renderer_classes=[renderers.HTMLFormRenderer])
+sequential_region_list = SequentialRegionViewSet.as_view({"get": "list"})
+sequential_region_create = SequentialRegionViewSet.as_view({"post": "create"})
+sequential_region_detail = SequentialRegionViewSet.as_view({"get": "retrieve"})
+sequential_region_modify = SequentialRegionViewSet.as_view(
+    {"put": "partial_update", "delete": "destroy"}
+)
+sequential_region_form = SequentialRegionViewSet.as_view({"get": "form"})
+sequential_region_form = SequentialRegionViewSet.as_view(
+    {"get": "form"}, renderer_classes=[renderers.HTMLFormRenderer]
+)

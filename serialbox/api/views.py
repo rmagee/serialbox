@@ -1,4 +1,4 @@
-'''
+"""
     Copyright 2018 SerialLab, CORP
 
     This file is part of SerialBox.
@@ -15,10 +15,10 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with SerialBox.  If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 import logging
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.permissions import BasePermission
 from rest_framework.reverse import reverse
@@ -48,12 +48,14 @@ class AllocationPermission(BasePermission):
         """
         Super users and allocate_numbers permission holders are allowed.
         """
-        return request.user.has_perm('serialbox.allocate_numbers') or \
-               request.user.is_superuser
+        return (
+            request.user.has_perm("serialbox.allocate_numbers")
+            or request.user.is_superuser
+        )
 
 
 class APIRoot(views.APIView):
-    '''
+    """
     ## Welcome!
 
     The SerialBox Number Pool API is written using
@@ -67,15 +69,17 @@ class APIRoot(views.APIView):
     * [The Django Project](http://djangoproject.com)
     * [The Django Rest Framework](http://http://www.django-rest-framework.org/)
 
-    '''
+    """
+
     permission_classes = (IsAuthenticated,)
 
     response_list = [
-        'pool-list',
-        'pool-create',
-        'sequential-region-list',
-        'sequential-region-create',
-        'allocate']
+        "pool-list",
+        "pool-create",
+        "sequential-region-list",
+        "sequential-region-create",
+        "allocate",
+    ]
 
     def __init__(self, **kwargs):
         views.APIView.__init__(self, **kwargs)
@@ -83,24 +87,23 @@ class APIRoot(views.APIView):
         self.response_list += FlavorSaver.get_api_urls()
 
     def get(self, request):
-        response_dict = {
-        }
+        response_dict = {}
         for item in self.response_list:
             response_dict[item] = reverse(item, request=request)
         self.response.data = response_dict
         return self.response
 
     def get_view_name(self):
-        return _('SerialBox Number Pool API')
+        return _("SerialBox Number Pool API")
 
     def _get_api_list(self):
-        '''
+        """
         Returns the api_list from any installed flavor packs.
-        '''
+        """
         pass
 
     class Meta(object):
-        verbose_name = _('SerialBox Number Pool API')
+        verbose_name = _("SerialBox Number Pool API")
 
 
 class DetailViewBase(generics.RetrieveAPIView):
@@ -108,7 +111,7 @@ class DetailViewBase(generics.RetrieveAPIView):
 
 
 class AllocateView(views.APIView):
-    '''
+    """
     ## Description
 
     The Pool Request View is the primary view by which other systems will
@@ -194,7 +197,8 @@ class AllocateView(views.APIView):
         * decimal - 0 through 9
     * __region__: The *machine name* of the region that handled the response
     via the Pool specified in the request.
-    '''
+    """
+
     permission_classes = (IsAuthenticated, AllocationPermission)
     serializer_class = sb_serializers.ResponseSerializer
 
@@ -204,25 +208,25 @@ class AllocateView(views.APIView):
             # TODO: doing this so I can display the documentation page without
             # generating an error.  Probably want a better approach
             if pool and size:
-                logger.debug('Request received for pool %s and region %s.')
+                logger.debug("Request received for pool %s and region %s.")
                 # convert the size parameter to an integer
                 size = int(size)
 
                 generator = get_generator(pool)
                 # pass the request off to the generator
-                response = generator.get_response(request, size,
-                                                  pool, region)
+                response = generator.get_response(request, size, pool, region)
                 response_rule = None
                 try:
                     content_type = request.accepted_renderer.format
                     response_rule = ResponseRule.objects.get(
-                        content_type=content_type,
-                        pool=generator.pool
+                        content_type=content_type, pool=generator.pool
                     )
                 except ResponseRule.DoesNotExist:
-                    logger.info("No response rules for content type %s and "
-                                "pool %s", request.accepted_renderer.format,
-                                generator.pool)
+                    logger.info(
+                        "No response rules for content type %s and " "pool %s",
+                        request.accepted_renderer.format,
+                        generator.pool,
+                    )
 
                 if not response_rule:
                     serializer = sb_serializers.ResponseSerializer(response)
@@ -230,12 +234,14 @@ class AllocateView(views.APIView):
                     response.save()
                 else:
                     # get the response rule that matches the content
-                    logger.debug('looking for a responserule with format %s '
-                                 'for pool %s.', format,
-                                 generator.pool.readable_name)
-                    db_task = self._set_task_parameters(pool, region,
-                                                        response_rule, size,
-                                                        request)
+                    logger.debug(
+                        "looking for a responserule with format %s " "for pool %s.",
+                        format,
+                        generator.pool.readable_name,
+                    )
+                    db_task = self._set_task_parameters(
+                        pool, region, response_rule, size, request
+                    )
                     try:
                         number_list = response.get_number_list()
                         rule = execute_rule_inline(number_list, db_task)
@@ -245,55 +251,32 @@ class AllocateView(views.APIView):
                         response.task_name = db_task.name
                         response.save()
                     except ResponseRule.DoesNotExist:
-                        db_task.status = 'ERROR'
+                        db_task.status = "ERROR"
                         db_task.save()
                         logger.exception(
-                            'Could not find a response rule for this '
-                            'format. Falling back to default return '
-                            'value')
+                            "Could not find a response rule for this "
+                            "format. Falling back to default return "
+                            "value"
+                        )
                         raise
             return Response(ret)
         except NotFound:
             raise
         except Exception as e:
-            raise exceptions.APIException(
-                str(e),
-                status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            raise exceptions.APIException(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def _set_task_parameters(self, pool, region, response_rule, size, request):
-        db_task = DBTask.objects.create(
-            rule=response_rule.rule,
-            status='FINISHED'
-        )
+        db_task = DBTask.objects.create(rule=response_rule.rule, status="FINISHED")
         TaskParameter.objects.create(
-            name='source',
-            value='serialbox-allocate',
-            task=db_task
+            name="source", value="serialbox-allocate", task=db_task
         )
-        TaskParameter.objects.create(
-            name='pool',
-            value=pool,
-            task=db_task
-        )
-        TaskParameter.objects.create(
-            name='size',
-            value=str(size),
-            task=db_task
-        )
+        TaskParameter.objects.create(name="pool", value=pool, task=db_task)
+        TaskParameter.objects.create(name="size", value=str(size), task=db_task)
         if region:
-            TaskParameter.objects.create(
-                name='region',
-                value=region,
-                task=db_task
-            )
+            TaskParameter.objects.create(name="region", value=region, task=db_task)
         query_values = request.query_params.dict()
         if len(query_values) > 0:
             for k, v in query_values.items():
-                TaskParameter.objects.create(
-                    name=k,
-                    value=v,
-                    task=db_task
-                )
+                TaskParameter.objects.create(name=k, value=v, task=db_task)
 
         return db_task
